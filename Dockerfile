@@ -1,4 +1,4 @@
-FROM jenkins/jnlp-slave:3.27-1
+FROM jenkins/jnlp-slave:3.29-1
 
 USER root
 RUN apt-get update && \
@@ -7,7 +7,9 @@ RUN apt-get update && \
     ca-certificates \
     curl \
     gnupg2 \
-    software-properties-common && \
+    software-properties-common \
+    python3 \
+    python3-pip && \
     curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - && \
     add-apt-repository \
     "deb [arch=amd64] https://download.docker.com/linux/debian \
@@ -20,8 +22,11 @@ RUN apt-get update && \
     containerd.io && \
     usermod -aG docker jenkins && \
     newgrp docker
+
 RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl && \
     chmod +x kubectl && \
     mv kubectl /usr/bin/kubectl
+
+RUN pip3 install jenkins-job-builder
 
 USER jenkins
